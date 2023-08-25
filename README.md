@@ -1,4 +1,4 @@
-Project Name **SOS-AI**
+Project Name- **SOS-AI**
 
 
 Hackathon Name - CodeINovact
