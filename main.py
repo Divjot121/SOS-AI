@@ -454,7 +454,7 @@ def face_recognization():
             virtual_assistant()
 
 def get_weather(city):
-    api_key = 'df7f1c701223ebc643d34779916590cb'
+    api_key = 'enter your'
     base_url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
     response = requests.get(base_url)
     data = response.json()
