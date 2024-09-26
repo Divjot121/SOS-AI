@@ -2,7 +2,7 @@ import cv2
 
 
 def setup_camera():
-    cam = cv2.VideoCapture(0)
+    cam = cv2.VideoCapture(1)
     if not cam.isOpened():
         print("Error: Could not open webcam.")
         exit()

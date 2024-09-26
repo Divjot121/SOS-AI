@@ -1,60 +1,50 @@
 import cv2
+import os
 
-# Open the webcam
-cam = cv2.VideoCapture(0)  # Try using -1 as the index
-if not cam.isOpened():
-    print("Error: Could not open webcam.")
-    exit()
+# Initialize face detector
+face_detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-# Set video frame dimensions
-cam.set(3, 640)  # Set video FrameWidth
-cam.set(4, 480)  # Set video FrameHeight
+# Create directory for storing sample images
+sample_dir = 'samples'
+if not os.path.exists(sample_dir):
+    os.makedirs(sample_dir)
 
-# Load the Haar Cascade classifier
-detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-if detector.empty():
-    print("Error: CascadeClassifier not loaded.")
-    exit()
+# Initialize webcam
+webcam = cv2.VideoCapture(1)
 
-# Input for face ID
-face_id = input("Enter a Numeric user ID here: ")
+# Initialize variables for subject ID and sample count
+subject_id = input('Enter subject ID: ')
+sample_count = 10
 
-print("Taking samples, look at the camera....")
-count = 0  # Initializing sampling face count
-
+# Loop to capture and save sample images
 while True:
-    # Read frames from the webcam
-    ret, img = cam.read()
-    if not ret:
-        print("Error: Failed to capture frame.")
-        break
+    # Read frame from webcam
+    ret, frame = webcam.read()
 
-    # Convert the frame to grayscale
-    converted_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # Convert to grayscale
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Detect faces in the grayscale image
-    faces = detector.detectMultiScale(converted_image, 1.3, 5)
+    # Detect faces
+    faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
+    # For each detected face
     for (x, y, w, h) in faces:
-        # Draw a rectangle around the detected face
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-        count += 1
+        # Increment sample count
+        sample_count += 1
 
-        # Save the face samples
-        cv2.imwrite("samples/face." + str(face_id) + '.' + str(count) + ".jpg",
-                    converted_image[y:y + h, x:x + w])
+        # Draw rectangle around detected face
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
-        # Display the frame with the rectangle
-        cv2.imshow('image', img)
+        # Save the detected face as a sample image
+        cv2.imwrite(os.path.join(sample_dir, f'{subject_id}_{sample_count}.jpg'), gray[y:y+h, x:x+w])
 
-    # Wait for a key press, break if 'ESC' is pressed
-    k = cv2.waitKey(100) & 0xff
-    if k == 27:
-        break
-    elif count >= 10:
+    # Display frame with detected faces
+    cv2.imshow('Sample Generator', frame)
+
+    # Break loop if 'q' is pressed
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release the webcam and close all windows
-print("Samples taken, closing the program....")
-cam.release()
+# Release webcam and destroy all windows
+webcam.release()
 cv2.destroyAllWindows()

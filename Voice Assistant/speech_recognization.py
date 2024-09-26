@@ -1,9 +1,15 @@
 import speech_recognition as sr
-import subprocess
+import pyttsx3
+import time
+from gtts import gTTS
+import os
 
 def speak(text):
-    subprocess.run(["say", text])
+    tts = gTTS(text=text, lang='en')
+    tts.save("output.mp3")
+    os.system("afplay output.mp3")  # For macOS
 
+# Function to listen for voice input and convert it to text
 def listen():
     recognizer = sr.Recognizer()
 
@@ -24,6 +30,7 @@ def listen():
         print(f"Could not request results from Google Speech Recognition service; {e}")
         return ""
 
+# Function for the virtual assistant's behavior
 def virtual_assistant():
     speak("Hello! How can I assist you today?")
 
@@ -43,5 +50,6 @@ def virtual_assistant():
         else:
             speak("I'm sorry, I don't understand that command. Can you please repeat?")
 
+# Run the virtual assistant when the script is executed
 if __name__ == "__main__":
     virtual_assistant()
