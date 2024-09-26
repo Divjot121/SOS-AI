@@ -7,7 +7,7 @@ import google.generativeai as genai
 from googletrans import Translator
 
 # Configure the Gemini API with your API key
-genai.configure(api_key="AIzaSyADImpvFindPFR2tfmrksjEvVSuZ99ruF0")
+genai.configure(api_key="ENTER_YOUR_KEY")
 
 
 class MentalHealthAssistant:
